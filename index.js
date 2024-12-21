@@ -16,26 +16,26 @@ app.get('/',(req,res)=>{
     return res.send("BusTracking API is running...");
 })
 
-app.get('/viewLocation', async(req,res)=>{
-    try{
-    const bdata=await fetch(process.env.locUrl);
-    const bj=await bdata.json();
-    const {vehicleNumber,latitude,longitude,location,ignition,speed}=bj.data.list[0];
-    return res.status(200).json({
-        vehicleNum: vehicleNumber,
-        lat: latitude,
-        long:longitude,
-        loc:location,
-        ign: ignition,
-        speed: speed,
-        time: new Date(),
-    });
-    }
-    catch(err){
-        console.log(err)
-        return res.status(500).json({success: false,error: err});
-    }
-})
+// app.get('/viewLocation', async(req,res)=>{
+//     try{
+//     const bdata=await fetch(process.env.locUrl);
+//     const bj=await bdata.json();
+//     const {vehicleNumber,latitude,longitude,location,ignition,speed}=bj.data.list[0];
+//     return res.status(200).json({
+//         vehicleNum: vehicleNumber,
+//         lat: latitude,
+//         long:longitude,
+//         loc:location,
+//         ign: ignition,
+//         speed: speed,
+//         time: new Date(),
+//     });
+//     }
+//     catch(err){
+//         console.log(err)
+//         return res.status(500).json({success: false,error: err});
+//     }
+// })
 const logLoc=async()=>{
     try{
     const bdata=await fetch(process.env.locUrl);
