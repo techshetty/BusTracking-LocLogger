@@ -20,12 +20,14 @@ app.get('/viewLocation', async(req,res)=>{
     try{
     const bdata=await fetch(process.env.locUrl);
     const bj=await bdata.json();
-    const {vehicleNumber,latitude,longitude,location}=bj.data.list[0];
+    const {vehicleNumber,latitude,longitude,location,ignition,speed}=bj.data.list[0];
     return res.status(200).json({
         vehicleNum: vehicleNumber,
         lat: latitude,
         long:longitude,
         loc:location,
+        ign: ignition,
+        speed: speed,
         time: new Date(),
     });
     }
@@ -38,16 +40,18 @@ const logLoc=async()=>{
     try{
     const bdata=await fetch(process.env.locUrl);
     const bj=await bdata.json();
-    const {vehicleNumber,latitude,longitude,location}=bj.data.list[0];
-    const query = `INSERT INTO vehicle_data (vehicleNum, lat, long, loc, time) VALUES ($1, $2, $3, $4, $5)`;
-    await pgclient.query(query,[vehicleNumber,latitude,longitude,location,new Date()])
+    const {vehicleNumber,latitude,longitude,location,ignition,speed}=bj.data.list[0];
+    if(ignition){
+    const query = `INSERT INTO vehicle_data (vehicleNum, lat, long, loc, time,ign,speed) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+    await pgclient.query(query,[vehicleNumber,latitude,longitude,location,new Date(),ignition,speed])
     console.log("Data Inserted SuccessFully");
+    }
     }
     catch(err){
         console.log(err.stack);
     }
 }
-cron.schedule('*/30 * * * *', logLoc);
+cron.schedule('* * * * *', logLoc);
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`)
 })
